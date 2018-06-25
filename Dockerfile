@@ -11,7 +11,7 @@ RUN apt-get update && apt-get install -y python-pip python-setuptools --no-insta
 RUN curl -s https://download.docker.com/linux/static/test/x86_64/docker-18.05.0-ce.tgz > docker-18.05.0-ce.tgz \ 
   && tar xzvf docker-18.05.0-ce.tgz \                   
   && mv docker/docker /usr/local/bin \                  
-  && chmod a+x /usr/local/bin/docker \                  
+  && groupadd docker && usermod -aG docker jenkins \                  
   && rm -r docker docker-18.05.0-ce.tgz                 
 
 USER jenkins
