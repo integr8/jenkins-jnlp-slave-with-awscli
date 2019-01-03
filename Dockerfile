@@ -1,4 +1,5 @@
 FROM jenkins/jnlp-slave:alpine
+LABEL maintainer="Fábio Luciano <fabio@naoimporta.com>"
 
 ARG DOCKER_VERSION='18.09.0'
 
