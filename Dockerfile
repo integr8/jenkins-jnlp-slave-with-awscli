@@ -1,14 +1,13 @@
-FROM jenkins/jnlp-slave                                 
+FROM jenkins/jnlp-slave:alpine
 
-USER root                                               
+ARG DOCKER_VERSION='18.09.0'
 
-RUN apt-get update && apt-get install -y python-pip python-setuptools build-essential --no-install-recommends && pip install awscli \                                                                                                             
-  && mkdir -p /home/jenkins/.local/bin/ \               
-  && ln -s /usr/bin/pip /home/jenkins/.local/bin/pip \  
-  && chown -R jenkins:jenkins /home/jenkins/.local \    
-  && rm -rf /var/lib/apt/lists/* \
-  && curl -s https://download.docker.com/linux/static/test/x86_64/docker-18.05.0-ce.tgz > docker-18.05.0-ce.tgz \ 
-  && tar xzvf docker-18.05.0-ce.tgz \                   
-  && mv docker/docker /usr/local/bin \                  
-  && groupadd docker && usermod -aG docker jenkins \                  
-  && rm -r docker docker-18.05.0-ce.tgz          
+USER root
+
+RUN apk --no-cache add py2-pip shadow && pip install --upgrade pip && pip install --no-cache-dir --upgrade --user awscli \
+  && mkdir -p /home/jenkins/.local/bin/ && ln -s /usr/bin/pip /home/jenkins/.local/bin/pip \
+  && wget --quiet https://download.docker.com/linux/static/stable/x86_64/docker-${DOCKER_VERSION}.tgz -O docker.tgz \ 
+  && tar xzvf docker.tgz && mv docker/docker /usr/local/bin \
+  && addgroup docker && usermod -aG docker jenkins && rm -r docker docker.tgz  
+
+ENTRYPOINT [ "/usr/local/bin/docker" ]
